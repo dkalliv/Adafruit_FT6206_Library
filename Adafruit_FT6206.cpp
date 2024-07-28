@@ -80,15 +80,21 @@ bool Adafruit_FT6206::begin(uint8_t thresh, TwoWire *theWire,
   // change threshhold to be higher/lower if desired
   if (thresh != 0)
     writeRegister8(FT62XX_REG_THRESHHOLD, thresh);
+    
+  writeRegister8(0x86,0x00); //Keep Active mode when there is no touching
+  writeRegister8(0x88,0x0A); //Set reporting rate in Active mode to 10Hz
 
-  if (readRegister8(FT62XX_REG_VENDID) != FT62XX_VENDID) {
+  //Disable checking vendor and chip id. This is working for now, but at
+  //some point it would make sense to check what IDs are returned and amend
+  //the code accordingly.
+  /*if (readRegister8(FT62XX_REG_VENDID) != FT62XX_VENDID) {
     return false;
   }
   uint8_t id = readRegister8(FT62XX_REG_CHIPID);
   if ((id != FT6206_CHIPID) && (id != FT6236_CHIPID) &&
       (id != FT6236U_CHIPID) && (id != FT6336U_CHIPID)) {
     return false;
-  }
+  }*/
 
   return true;
 }
